@@ -1,67 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Profile Editor</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-
-<h3>Application</h3>
-<div class="editor-container">
-  <div class="input-group">
-    <input type="text" id="roleDisplay" class="readonly" placeholder="Role" readonly />
-    <div class="note-text">Your Role cannot be changed</div>
-  </div>
-  
-  <div class="input-group">
-    <input type="text" id="idInput" placeholder="ID" readonly />
-    <div class="note-text">Your Build ID</div>
-  </div>
-
-  <div class="input-group">
-    <input type="email" id="emailInput" placeholder="Email" readonly />
-    <div class="note-text">Owner Login cannot be changed</div>
-  </div>
-
-  <h3>Contact</h3>
-
-  <div class="input-group">
-    <div class="input-row">
-      <input type="text" id="nameInput" placeholder="Name" />
-      <button class="clear-btn" onclick="document.getElementById('nameInput').value=''">✕</button>
-    </div>
-  </div>
-
-  <div class="input-group">
-    <div class="input-row">
-      <input type="text" id="contactEmailInput" placeholder="Email" />
-      <button class="clear-btn" onclick="document.getElementById('contactEmailInput').value=''">✕</button>
-    </div>
-  </div>
-
-  <div class="input-group">
-    <div class="input-row">
-      <input type="text" id="phoneInput" placeholder="Phone" />
-      <button class="clear-btn" onclick="document.getElementById('phoneInput').value=''">✕</button>
-    </div>
-  </div>
-
-  <div class="input-group">
-    <div class="input-row">
-      <input type="text" id="addressInput" placeholder="Address" />
-      <button class="clear-btn" onclick="document.getElementById('addressInput').value=''">✕</button>
-    </div>
-    <div class="note-text">Your ownership domain mail would be sent to this address</div>
-  </div>
-
-  <button id="saveBtn">💾 Save Changes</button>
-  <button id="logoutBtn">Logout</button>
-
-  <div id="statusMessage"></div>
-</div>
-
-<script src="script.js"></script>
-
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Editor - React Version</title>
+    <script type="module" crossorigin src="./assets/index-C0JzwWrr.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-QGs12HhI.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
