@@ -4,15 +4,103 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile - Profile Editor</title>
-    <script type="module" crossorigin src="./assets/index-C0JzwWrr.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-QGs12HhI.css">
+    <title>My Profile - Display Only</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+      
+      .profile-display {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        padding: 30px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        text-align: center;
+      }
+      
+      .test-ribbon {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+        color: white;
+        text-align: center;
+        padding: 8px;
+        font-weight: bold;
+        font-size: 14px;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        animation: ribbonGlow 2s ease-in-out infinite alternate;
+      }
+      
+      @keyframes ribbonGlow {
+        from { box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        to { box-shadow: 0 2px 20px rgba(255,107,107,0.5); }
+      }
+      
+      h1 {
+        margin-bottom: 20px;
+        font-size: 2rem;
+        color: #fff;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      }
+      
+      .profile-info {
+        margin: 20px 0;
+        text-align: left;
+      }
+      
+      .profile-info p {
+        margin: 10px 0;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #00bfff;
+      }
+      
+      .profile-info strong {
+        color: #00bfff;
+        margin-right: 10px;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script>
-      // Force route to myprofile
-      window.location.hash = '#/myprofile';
-    </script>
+    <!-- Test Ribbon -->
+    <div class="test-ribbon">
+      🧪 My Profile - Display Only - Test from GitHub and Cursor
+    </div>
+    
+    <div class="profile-display">
+      <h1>My Profile</h1>
+      <p>This page is for displaying profile information only.</p>
+      <p>Profile data will be loaded and displayed by Wix Velo code.</p>
+      
+      <div class="profile-info">
+        <p><strong>Name:</strong> <span id="myName">Loading...</span></p>
+        <p><strong>Email:</strong> <span id="myEmail">Loading...</span></p>
+        <p><strong>Display Name:</strong> <span id="myDisplayName">Loading...</span></p>
+        <p><strong>Bio:</strong> <span id="myBio">Loading...</span></p>
+        <p><strong>Location:</strong> <span id="myLocation">Loading...</span></p>
+        <p><strong>Interests:</strong> <span id="myInterests">Loading...</span></p>
+        <p><strong>Website:</strong> <span id="myWebsite">Loading...</span></p>
+      </div>
+      
+      <p><em>Profile photo and additional data will be populated by Wix Velo.</em></p>
+    </div>
   </body>
 </html>
