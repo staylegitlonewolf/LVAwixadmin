@@ -89,6 +89,11 @@ const MyAccount = ({ memberData, setMemberData, statusMessage, statusType, setSt
     }
   }
 
+  // Handle apply button click
+  const handleApply = () => {
+    window.parent.postMessage({ type: "navigateToApplication" }, "*")
+  }
+
   // Clear field
   const clearField = (field) => {
     setFormData(prev => ({
@@ -214,6 +219,14 @@ const MyAccount = ({ memberData, setMemberData, statusMessage, statusType, setSt
           disabled={isSaving}
         >
           {isSaving ? "⏳ Saving..." : "💾 Save Changes"}
+        </button>
+        
+        <button 
+          id="applyBtn" 
+          onClick={handleApply}
+          className="apply-btn"
+        >
+          📝 Apply for Website
         </button>
         
         <button 

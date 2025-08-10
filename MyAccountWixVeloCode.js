@@ -85,6 +85,14 @@ function setupIframeCommunication() {
                 await handleSaveData(event.data.payload);
             }
 
+            if (event.data?.type === "navigateToApplication") {
+                wixLocation.to('/application');
+            }
+
+            if (event.data?.type === "saveApplication" && event.data.payload) {
+                await handleSaveApplication(event.data.payload);
+            }
+
         } catch (error) {
             console.error("Error handling iframe message:", error);
             $w('#myaccountIframe').postMessage({ 
@@ -136,6 +144,36 @@ async function handleSaveData(payload) {
         console.error("Error saving profile data from iframe:", err);
         $w('#myaccountIframe').postMessage({ 
             type: "saveError", 
+            error: err.message 
+        });
+    }
+}
+
+// ===== Handle Save Application =====
+async function handleSaveApplication(payload) {
+    try {
+        // Send submitting status to iframe
+        $w('#myaccountIframe').postMessage({ type: "submittingApplication" });
+
+        // Save application to "Applications" collection
+        const applicationData = {
+            ...payload,
+            _id: currentMemberId + '_' + Date.now(), // Unique ID
+            memberId: currentMemberId,
+            submissionDate: new Date().toISOString(),
+            status: 'Pending'
+        };
+
+        await wixData.insert("Applications", applicationData);
+
+        // Send success message back to iframe
+        $w('#myaccountIframe').postMessage({ type: "applicationSuccess" });
+        console.log("✅ Application saved to Applications collection");
+
+    } catch (err) {
+        console.error("Error saving application:", err);
+        $w('#myaccountIframe').postMessage({ 
+            type: "applicationError", 
             error: err.message 
         });
     }

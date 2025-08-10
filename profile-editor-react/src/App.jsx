@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import MyAccount from './components/MyAccount'
+import Application from './components/Application'
 
 function App() {
   const [memberData, setMemberData] = useState({})
@@ -34,6 +35,15 @@ function App() {
       } else if (event.data.type === "saving") {
         setStatusMessage("⏳ Saving profile...")
         setStatusType("loading")
+      } else if (event.data.type === "applicationSuccess") {
+        setStatusMessage("✅ Application submitted successfully!")
+        setStatusType("success")
+      } else if (event.data.type === "applicationError") {
+        setStatusMessage("❌ Error submitting application: " + (event.data.error || "Unknown error"))
+        setStatusType("error")
+      } else if (event.data.type === "submittingApplication") {
+        setStatusMessage("⏳ Submitting application...")
+        setStatusType("loading")
       }
     }
 
@@ -47,6 +57,15 @@ function App() {
         <Routes>
           <Route path="/myaccount" element={
             <MyAccount 
+              memberData={memberData}
+              setMemberData={setMemberData}
+              statusMessage={statusMessage}
+              statusType={statusType}
+              setStatusMessage={setStatusMessage}
+            />
+          } />
+          <Route path="/application" element={
+            <Application 
               memberData={memberData}
               setMemberData={setMemberData}
               statusMessage={statusMessage}
