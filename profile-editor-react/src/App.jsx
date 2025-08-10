@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import MyAccount from './components/MyAccount'
+import MyProfile from './components/MyProfile/MyProfile'
 
 function App() {
   const [memberData, setMemberData] = useState({})
@@ -41,15 +43,31 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
-      <MyAccount 
-        memberData={memberData}
-        setMemberData={setMemberData}
-        statusMessage={statusMessage}
-        statusType={statusType}
-        setStatusMessage={setStatusMessage}
-      />
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/myaccount" element={
+            <MyAccount 
+              memberData={memberData}
+              setMemberData={setMemberData}
+              statusMessage={statusMessage}
+              statusType={statusType}
+              setStatusMessage={setStatusMessage}
+            />
+          } />
+          <Route path="/myprofile" element={
+            <MyProfile 
+              memberData={memberData}
+              setMemberData={setMemberData}
+              statusMessage={statusMessage}
+              statusType={statusType}
+              setStatusMessage={setStatusMessage}
+            />
+          } />
+          <Route path="/" element={<Navigate to="/myaccount" replace />} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 
