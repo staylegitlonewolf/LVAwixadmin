@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import ProfileEditor from './components/ProfileEditor'
+import MyAccount from './components/MyAccount'
 
 function App() {
   const [memberData, setMemberData] = useState({})
@@ -42,7 +42,7 @@ function App() {
 
   return (
     <div className="App">
-      <ProfileEditor 
+      <MyAccount 
         memberData={memberData}
         setMemberData={setMemberData}
         statusMessage={statusMessage}

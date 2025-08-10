@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import './ProfileEditor.css'
+import './MyAccount.css'
 
-const ProfileEditor = ({ memberData, setMemberData, statusMessage, statusType, setStatusMessage }) => {
+const MyAccount = ({ memberData, setMemberData, statusMessage, statusType, setStatusMessage }) => {
   const [formData, setFormData] = useState({
     name: '',
     contactEmail: '',
@@ -98,7 +98,7 @@ const ProfileEditor = ({ memberData, setMemberData, statusMessage, statusType, s
   }
 
   return (
-    <div className="profile-editor">
+    <div className="my-account">
       {/* Test Ribbon */}
       <div className="test-ribbon">
         🧪 This is a test from GitHub and Cursor
@@ -234,4 +234,4 @@ const ProfileEditor = ({ memberData, setMemberData, statusMessage, statusType, s
   )
 }
 
-export default ProfileEditor
+export default MyAccount
