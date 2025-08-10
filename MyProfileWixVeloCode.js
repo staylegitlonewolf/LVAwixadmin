@@ -39,18 +39,14 @@ $w.onReady(async function () {
 function getDefaultMemberData(id) {
     return {
         _id: id,
-        role: "Member",
-        email: "", // will be set from authentication later if needed
-        name: "",
-        contactEmail: "",
-        phone: "",
-        address: "",
-        profilePhoto: "",
-        displayName: "",
-        bio: "",
-        website: "",
-        location: "",
-        interests: ""
+        email: "",
+        name: 'Your Name',
+        role: 'Member',       
+        title_fld: 'LVA',
+        location: '',
+        contactEmail: '',
+        phone: '',
+        profilePhoto: ""
     };
 }
 
@@ -65,15 +61,15 @@ function populateProfileDisplay(data) {
             $w('#myProfilePic').hide();
         }
         
-        // Populate text fields
-        $w('#myName').text = data.name || 'No name provided';
+        // Populate text fields with the specific fields requested
+        $w('#myId').text = data._id || 'No ID provided';
         $w('#myEmail').text = data.email || 'No email provided';
-        $w('#myDisplayName').text = data.displayName || 'No display name provided';
-        $w('#myBio').text = data.bio || 'No bio provided';
-        $w('#myLocation').text = data.location || 'No location provided';
-        $w('#myInterests').text = data.interests || 'No interests provided';
-        $w('#myWebsite').text = data.website || 'No website provided';
+        $w('#myName').text = data.name || 'Your Name';
         $w('#myRole').text = data.role || 'Member';
+        $w('#myTitle').text = data.title_fld || 'LVA';
+        $w('#myLocation').text = data.location || 'No location provided';
+        $w('#myContactEmail').text = data.contactEmail || 'No contact email provided';
+        $w('#myPhone').text = data.phone || 'No phone provided';
         
         console.log("✅ Profile display populated successfully");
         
