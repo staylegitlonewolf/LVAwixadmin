@@ -11,8 +11,10 @@
   <body>
     <div id="root"></div>
     <script>
-      // Force route to myaccount
-      window.location.hash = '#/myaccount';
+      // Only set myaccount route if no hash is present
+      if (!window.location.hash) {
+        window.location.hash = '#/myaccount';
+      }
     </script>
   </body>
 </html>

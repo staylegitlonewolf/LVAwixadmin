@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Editor - React Version</title>
     <script>
-      // Force route to myaccount for default
-      window.location.hash = '#/myaccount';
+      // Only set default route if no hash is present
+      if (!window.location.hash) {
+        window.location.hash = '#/myaccount';
+      }
     </script>
     <script type="module" crossorigin src="./assets/index-C0JzwWrr.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-QGs12HhI.css">

@@ -46,6 +46,7 @@ function getDefaultMemberData(id) {
         address: '',
         contactEmail: '',
         phone: '',
+        profilePhoto: ''
     };
 }
 
