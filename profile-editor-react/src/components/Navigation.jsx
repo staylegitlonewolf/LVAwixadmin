@@ -9,13 +9,15 @@ const Navigation = ({ memberData }) => {
     navigate(path)
   }
 
-  // Check user roles
-  const isAdmin = memberData?.role === 'Admin'
-  const isClient = memberData?.role === 'Client'
+  // Check user roles - normalize to handle different cases
+  const normalizedRole = memberData?.role?.toString().toLowerCase()
+  const isAdmin = normalizedRole === 'admin'
+  const isClient = normalizedRole === 'client'
   
   // Debug logging
   console.log('Navigation - memberData:', memberData)
   console.log('Navigation - role:', memberData?.role)
+  console.log('Navigation - normalizedRole:', normalizedRole)
   console.log('Navigation - isAdmin:', isAdmin)
   console.log('Navigation - isClient:', isClient)
   
@@ -32,6 +34,7 @@ const Navigation = ({ memberData }) => {
           {/* Debug info - remove after testing */}
           <div style={{ fontSize: '10px', color: 'white', marginTop: '2px' }}>
             Role: {memberData?.role || 'undefined'} | 
+            Normalized: {normalizedRole || 'undefined'} | 
             isAdmin: {isAdmin ? 'true' : 'false'} | 
             isClient: {isClient ? 'true' : 'false'}
             {(!memberData || Object.keys(memberData).length === 0) && 

@@ -6,8 +6,9 @@ const Admin = ({ memberData, setMemberData, statusMessage, statusType, setStatus
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // all, new, pending, approved
 
-  // Check if user has admin role
-  const isAdmin = memberData?.role === 'Admin'
+  // Check if user has admin role - normalize to handle different cases
+  const normalizedRole = memberData?.role?.toString().toLowerCase()
+  const isAdmin = normalizedRole === 'admin'
 
   useEffect(() => {
     if (!isAdmin) {

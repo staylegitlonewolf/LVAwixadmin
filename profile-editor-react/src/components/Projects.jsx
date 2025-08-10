@@ -6,8 +6,9 @@ const Projects = ({ memberData, setMemberData, statusMessage, statusType, setSta
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // all, new, pending, approved
 
-  // Check if user has client role
-  const isClient = memberData?.role === 'Client'
+  // Check if user has client role - normalize to handle different cases
+  const normalizedRole = memberData?.role?.toString().toLowerCase()
+  const isClient = normalizedRole === 'client'
 
   useEffect(() => {
     if (!isClient) {
