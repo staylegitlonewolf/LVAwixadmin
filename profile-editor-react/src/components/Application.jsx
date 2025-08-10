@@ -114,7 +114,7 @@ const Application = ({ memberData, setMemberData, statusMessage, statusType, set
       ...applicationData,
       memberId: memberData._id || '',
       submissionDate: new Date().toISOString(),
-      status: 'Pending'
+      status: 'New'
     }
 
     window.parent.postMessage({ 

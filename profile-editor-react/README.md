@@ -1,93 +1,91 @@
-# Profile Editor React App
+# LVA Studio Member Portal
 
-A modern React + Vite implementation of the Wix Profile Editor with enhanced UX and dark theme.
+A React-based member portal for LVA Studio with role-based access control and application management.
 
-## 🚀 Features
+## Features
 
-- **React + Vite** - Modern development stack
-- **Dark Theme** - Beautiful gradient background with glassmorphism effects
-- **Form Validation** - Real-time validation with user feedback
-- **Loading States** - Visual feedback during save operations
-- **Iframe Communication** - Seamless integration with Wix Velo
-- **Test Ribbon** - Visual indicator for testing purposes
-- **Responsive Design** - Works on all screen sizes
+### Role-Based Navigation
+- **Admin Role**: Users with "Admin" role in the "Main" CMS can access the Admin panel
+- **Client Role**: Users with "Client" role can access the Projects page
+- **Member Role**: Standard users can access Home, My Account, and Application pages
 
-## 🛠️ Tech Stack
+### Admin Panel (`/admin`)
+- View all applications from the "Applications" CMS
+- Filter applications by status (New, Pending, Approved)
+- Approve applications (changes status to "Approved")
+- Set applications to Pending (changes status to "Pending")
+- Remove applications from the CMS
+- Real-time status updates
 
-- **React 18** - UI framework
-- **Vite** - Build tool and dev server
-- **CSS3** - Modern styling with animations
-- **PostMessage API** - Iframe communication
+### Projects Page (`/projects`)
+- View user's own submitted applications
+- Track application progress and status
+- Filter by application status
+- Detailed view of application information
+- Next steps information for approved applications
 
-## 📦 Installation
+### Application Management
+- Submit new applications with status "New"
+- Applications are stored in the "Applications" CMS
+- Status tracking: New → Pending → Approved
+- Role-based access control
 
-```bash
-# Install dependencies
-npm install
+## Message Types for Wix Integration
 
-# Start development server
-npm run dev
+### From React to Wix
+- `getApplications` - Request all applications (Admin only)
+- `getMyApplications` - Request user's applications (Client only)
+- `updateApplicationStatus` - Update application status
+- `deleteApplication` - Remove application from CMS
+- `saveApplication` - Submit new application
 
-# Build for production
-npm run build
+### From Wix to React
+- `applicationsData` - Return all applications data
+- `myApplicationsData` - Return user's applications data
+- `applicationUpdateSuccess` - Status update successful
+- `applicationUpdateError` - Status update failed
+- `applicationDeleteSuccess` - Application removal successful
+- `applicationDeleteError` - Application removal failed
 
-# Preview production build
-npm run preview
-```
+## Setup Instructions
 
-## 🔧 Development
+1. Ensure the "Main" CMS has a `role` field with values: "Admin", "Client", "Member"
+2. Ensure the "Applications" CMS has a `status` field with values: "New", "Pending", "Approved"
+3. Implement the message handlers in Wix Velo to handle the CMS operations
+4. Deploy the React application and embed it in your Wix site
 
-The app is structured as follows:
+## File Structure
 
 ```
 src/
-├── App.jsx              # Main app component with iframe communication
-├── App.css              # Global styles
 ├── components/
-│   ├── ProfileEditor.jsx # Main profile editor component
-│   └── ProfileEditor.css # Component-specific styles
-└── main.jsx             # App entry point
+│   ├── Admin.jsx          # Admin panel component
+│   ├── Admin.css          # Admin panel styles
+│   ├── Projects.jsx       # Projects page component
+│   ├── Projects.css       # Projects page styles
+│   ├── Navigation.jsx     # Updated navigation with role-based links
+│   └── ...                # Other existing components
+├── App.jsx                # Updated with new routes
+└── main.jsx              # Entry point
 ```
 
-## 🌐 Wix Integration
+## Dependencies
 
-This React app is designed to work as an iframe within Wix Velo. The communication flow:
+- React 19.1.1
+- React Router DOM 7.8.0
+- Vite for build tooling
 
-1. **App loads** → Sends "ready" message to parent
-2. **Parent responds** → Sends member data
-3. **User saves** → Sends "saveData" with payload
-4. **Parent saves** → Sends "saveSuccess" or "saveError"
-5. **User logs out** → Sends "logoutRequest"
+## Development
 
-## 🎨 Styling
+```bash
+npm install
+npm run dev
+```
 
-- **Dark gradient background** (`#1a1a2e` → `#16213e` → `#0f3460`)
-- **Glassmorphism effects** with backdrop blur
-- **Animated test ribbon** with gradient colors
-- **Smooth transitions** and hover effects
-- **Custom scrollbars** with blue gradient
+## Build
 
-## 🧪 Testing
+```bash
+npm run build
+```
 
-The app includes a test ribbon that displays "🧪 This is a test from GitHub and Cursor" to verify deployment.
-
-## 📱 Responsive
-
-- Mobile-first design
-- Flexible layout that adapts to screen size
-- Touch-friendly buttons and inputs
-
-## 🔄 State Management
-
-Uses React hooks for state management:
-- `useState` for form data and UI state
-- `useEffect` for iframe communication
-- Controlled components for form inputs
-
-## 🚀 Deployment
-
-Build the app and deploy the `dist` folder to your hosting service. The app works as a standalone application or embedded iframe.
-
-## 📄 License
-
-This project is part of the LVA Wix Admin system.
+The built files will be in the `dist/` directory and can be deployed to your hosting platform.

@@ -1,13 +1,17 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import './Navigation.css'
 
-const Navigation = () => {
+const Navigation = ({ memberData }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const handleNavigation = (path) => {
     navigate(path)
   }
+
+  // Check user roles
+  const isAdmin = memberData?.role === 'Admin'
+  const isClient = memberData?.role === 'Client'
 
   return (
     <nav className="navigation">
@@ -40,6 +44,28 @@ const Navigation = () => {
             <span className="nav-icon">📝</span>
             <span className="nav-text">Application</span>
           </button>
+
+          {/* Show Admin link only for Admin users */}
+          {isAdmin && (
+            <button 
+              className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
+              onClick={() => handleNavigation('/admin')}
+            >
+              <span className="nav-icon">🔧</span>
+              <span className="nav-text">Admin</span>
+            </button>
+          )}
+
+          {/* Show Projects link only for Client users */}
+          {isClient && (
+            <button 
+              className={`nav-link ${location.pathname === '/projects' ? 'active' : ''}`}
+              onClick={() => handleNavigation('/projects')}
+            >
+              <span className="nav-icon">📁</span>
+              <span className="nav-text">Projects</span>
+            </button>
+          )}
         </div>
       </div>
     </nav>

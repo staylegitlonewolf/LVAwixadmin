@@ -4,6 +4,8 @@ import './App.css'
 import Home from './components/Home'
 import MyAccount from './components/MyAccount'
 import Application from './components/Application'
+import Admin from './components/Admin'
+import Projects from './components/Projects'
 import Navigation from './components/Navigation'
 
 function App() {
@@ -56,7 +58,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navigation />
+        <Navigation memberData={memberData} />
         <Routes>
           <Route path="/home" element={
             <Home 
@@ -75,6 +77,24 @@ function App() {
           } />
           <Route path="/application" element={
             <Application 
+              memberData={memberData}
+              setMemberData={setMemberData}
+              statusMessage={statusMessage}
+              statusType={statusType}
+              setStatusMessage={setStatusMessage}
+            />
+          } />
+          <Route path="/admin" element={
+            <Admin 
+              memberData={memberData}
+              setMemberData={setMemberData}
+              statusMessage={statusMessage}
+              statusType={statusType}
+              setStatusMessage={setStatusMessage}
+            />
+          } />
+          <Route path="/projects" element={
+            <Projects 
               memberData={memberData}
               setMemberData={setMemberData}
               statusMessage={statusMessage}
