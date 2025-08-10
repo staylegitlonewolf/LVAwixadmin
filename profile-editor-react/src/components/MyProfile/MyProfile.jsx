@@ -90,7 +90,7 @@ const MyProfile = ({ memberData, setMemberData, statusMessage, statusType, setSt
       socialLinks: profileData.socialLinks
     }
 
-    window.parent.postMessage({ type: "saveProfileData", payload: updatedData }, "*")
+    window.parent.postMessage({ type: "saveProfile", payload: updatedData }, "*")
   }
 
   // Clear field
