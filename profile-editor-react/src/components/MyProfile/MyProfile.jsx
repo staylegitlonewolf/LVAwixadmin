@@ -80,7 +80,7 @@ const MyProfile = ({ memberData, setMemberData, statusMessage, statusType, setSt
           
           <div className="info-item">
             <label>Address:</label>
-            <span>{profileData.address || 'No location provided'}</span>
+            <span>{profileData.address || 'No address provided'}</span>
           </div>
           
           <div className="info-item">

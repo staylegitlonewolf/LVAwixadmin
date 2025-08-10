@@ -43,10 +43,9 @@ function getDefaultMemberData(id) {
         name: 'Your Name',
         role: 'Member',       
         title_fld: 'LVA',
-        location: '',
+        address: '',
         contactEmail: '',
         phone: '',
-        profilePhoto: ""
     };
 }
 
