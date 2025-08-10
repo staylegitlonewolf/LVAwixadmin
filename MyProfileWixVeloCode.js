@@ -1,4 +1,4 @@
-//MyProfile Wix Velo
+//MyProfile Wix Velo - Display Only
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
 import { authentication } from 'wix-members';
@@ -27,14 +27,8 @@ $w.onReady(async function () {
             memberData = getDefaultMemberData(currentMemberId);
         }
 
-        // Show profile photo if exists
-        if (memberData.profilePhoto) {
-            $w('#myProfilePic').src = memberData.profilePhoto;
-            $w('#myProfilePic').show();
-        }
-
-        // Set up iframe communication
-        setupIframeCommunication();
+        // Populate the display elements
+        populateProfileDisplay(memberData);
 
     } catch (error) {
         console.error("❌ Error in onReady:", error);      
@@ -51,36 +45,39 @@ function getDefaultMemberData(id) {
         contactEmail: "",
         phone: "",
         address: "",
-        profilePhoto: ""
+        profilePhoto: "",
+        displayName: "",
+        bio: "",
+        website: "",
+        location: "",
+        interests: ""
     };
 }
 
-// ===== Iframe Communication =====
-function setupIframeCommunication() {
-    const iframe = $w('#myprofileIframe');
-
-    iframe.onMessage(async (event) => {
-        const data = event.data;
-        if (!data) return;
-
-        try {
-            // When iframe is ready, send current member data
-            if (data === "ready") {
-                iframe.postMessage(memberData);
-                console.log("✅ Sent member data to iframe");
-            }
-
-            // When iframe sends updated profile
-            if (data.type === "saveProfile") {
-                await wixData.update("Main", data.payload);
-                memberData = data.payload; // update local copy
-                iframe.postMessage({ type: "saveSuccess" });
-                console.log("💾 Profile updated:", data.payload);
-            }
-
-        } catch (error) {
-            console.error("❌ Error handling iframe message:", error);
-            iframe.postMessage({ type: "saveError", error: error.message });
+// ===== Populate Profile Display =====
+function populateProfileDisplay(data) {
+    try {
+        // Show profile photo if exists
+        if (data.profilePhoto) {
+            $w('#myProfilePic').src = data.profilePhoto;
+            $w('#myProfilePic').show();
+        } else {
+            $w('#myProfilePic').hide();
         }
-    });
+        
+        // Populate text fields
+        $w('#myName').text = data.name || 'No name provided';
+        $w('#myEmail').text = data.email || 'No email provided';
+        $w('#myDisplayName').text = data.displayName || 'No display name provided';
+        $w('#myBio').text = data.bio || 'No bio provided';
+        $w('#myLocation').text = data.location || 'No location provided';
+        $w('#myInterests').text = data.interests || 'No interests provided';
+        $w('#myWebsite').text = data.website || 'No website provided';
+        $w('#myRole').text = data.role || 'Member';
+        
+        console.log("✅ Profile display populated successfully");
+        
+    } catch (error) {
+        console.error("❌ Error populating profile display:", error);
+    }
 }
