@@ -41,7 +41,8 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
   padding: 20px;
   margin: 0;
-  background: transparent;
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
