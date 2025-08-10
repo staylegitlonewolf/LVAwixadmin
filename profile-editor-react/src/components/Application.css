@@ -163,6 +163,7 @@
   padding-right: 45px;
   position: relative;
   background-color: rgba(255, 255, 255, 0.1);
+  background-clip: padding-box;
 }
 
 .input-group select:hover {
@@ -187,17 +188,20 @@
   border: none;
   font-size: 16px;
   font-weight: 500;
+  background-image: none !important;
 }
 
 .input-group select option:hover {
   background: #00bfff !important;
   color: #ffffff !important;
+  background-image: none !important;
 }
 
 .input-group select option:checked {
   background: #00bfff !important;
   color: #ffffff !important;
   font-weight: 600;
+  background-image: none !important;
 }
 
 /* Additional dropdown styling for better browser compatibility */
@@ -207,6 +211,13 @@
 
 .input-group select:focus {
   background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Ensure no background images on dropdown options */
+.input-group select option,
+.input-group select optgroup {
+  background-image: none !important;
+  background-repeat: no-repeat !important;
 }
 
 /* Dropdown Animation and Polish */
