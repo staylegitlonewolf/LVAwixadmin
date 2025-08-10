@@ -18,6 +18,14 @@ const Navigation = () => {
         
         <div className="nav-links">
           <button 
+            className={`nav-link ${location.pathname === '/home' ? 'active' : ''}`}
+            onClick={() => handleNavigation('/home')}
+          >
+            <span className="nav-icon">🏠</span>
+            <span className="nav-text">Home</span>
+          </button>
+          
+          <button 
             className={`nav-link ${location.pathname === '/myaccount' ? 'active' : ''}`}
             onClick={() => handleNavigation('/myaccount')}
           >

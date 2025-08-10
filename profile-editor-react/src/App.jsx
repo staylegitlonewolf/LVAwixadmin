@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
+import Home from './components/Home'
 import MyAccount from './components/MyAccount'
 import Application from './components/Application'
 import Navigation from './components/Navigation'
@@ -57,6 +58,12 @@ function App() {
       <div className="App">
         <Navigation />
         <Routes>
+          <Route path="/home" element={
+            <Home 
+              memberData={memberData}
+              setMemberData={setMemberData}
+            />
+          } />
           <Route path="/myaccount" element={
             <MyAccount 
               memberData={memberData}
@@ -75,7 +82,7 @@ function App() {
               setStatusMessage={setStatusMessage}
             />
           } />
-          <Route path="/" element={<Navigate to="/myaccount" replace />} />
+          <Route path="/" element={<Navigate to="/home" replace />} />
         </Routes>
       </div>
     </Router>
