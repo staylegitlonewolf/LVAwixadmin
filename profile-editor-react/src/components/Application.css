@@ -68,7 +68,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 60px; /* Account for ribbon */
+  padding-top: 120px; /* Account for navigation bar and ribbon */
 }
 
 .application h3 {
@@ -190,7 +190,6 @@
   flex-wrap: wrap;
 }
 
-.back-btn,
 .submit-btn {
   padding: 15px 30px;
   border: none;
@@ -202,18 +201,6 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   min-width: 200px;
-}
-
-.back-btn {
-  background: linear-gradient(45deg, #6c757d, #495057);
-  color: white;
-  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
-}
-
-.back-btn:hover {
-  background: linear-gradient(45deg, #495057, #343a40);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.6);
 }
 
 .submit-btn {
@@ -272,7 +259,7 @@
 @media (max-width: 768px) {
   .application {
     padding: 10px;
-    padding-top: 60px;
+    padding-top: 110px;
   }
   
   .application-container {
@@ -293,7 +280,6 @@
     align-items: center;
   }
   
-  .back-btn,
   .submit-btn {
     width: 100%;
     max-width: 300px;

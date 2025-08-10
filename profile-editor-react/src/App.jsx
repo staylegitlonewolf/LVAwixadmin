@@ -3,6 +3,7 @@ import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import MyAccount from './components/MyAccount'
 import Application from './components/Application'
+import Navigation from './components/Navigation'
 
 function App() {
   const [memberData, setMemberData] = useState({})
@@ -54,6 +55,7 @@ function App() {
   return (
     <Router>
       <div className="App">
+        <Navigation />
         <Routes>
           <Route path="/myaccount" element={
             <MyAccount 

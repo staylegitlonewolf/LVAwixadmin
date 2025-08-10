@@ -123,10 +123,7 @@ const Application = ({ memberData, setMemberData, statusMessage, statusType, set
     }, "*")
   }
 
-  // Handle back to MyAccount
-  const handleBack = () => {
-    window.parent.postMessage({ type: "navigateToMyAccount" }, "*")
-  }
+
 
   return (
     <div className="application">
@@ -340,13 +337,6 @@ const Application = ({ memberData, setMemberData, statusMessage, statusType, set
         </div>
 
         <div className="button-group">
-          <button 
-            className="back-btn" 
-            onClick={handleBack}
-          >
-            ← Back to My Account
-          </button>
-          
           <button 
             className="submit-btn" 
             onClick={handleSubmit}
