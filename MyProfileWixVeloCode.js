@@ -27,8 +27,8 @@ $w.onReady(async function () {
             memberData = getDefaultMemberData(currentMemberId);
         }
 
-        // Populate the display elements
-        populateProfileDisplay(memberData);
+        // Set up iframe communication
+        setupIframeCommunication();
 
     } catch (error) {
         console.error("❌ Error in onReady:", error);      
@@ -50,30 +50,23 @@ function getDefaultMemberData(id) {
     };
 }
 
-// ===== Populate Profile Display =====
-function populateProfileDisplay(data) {
-    try {
-        // Show profile photo if exists
-        if (data.profilePhoto) {
-            $w('#myProfilePic').src = data.profilePhoto;
-            $w('#myProfilePic').show();
-        } else {
-            $w('#myProfilePic').hide();
+// ===== Iframe Communication =====
+function setupIframeCommunication() {
+    const iframe = $w('#myprofileIframe');
+
+    iframe.onMessage(async (event) => {
+        const data = event.data;
+        if (!data) return;
+
+        try {
+            // When iframe is ready, send current member data
+            if (data === "ready") {
+                iframe.postMessage(memberData);
+                console.log("✅ Sent member data to iframe");
+            }
+
+        } catch (error) {
+            console.error("❌ Error handling iframe message:", error);
         }
-        
-        // Populate text fields with the specific fields requested
-        $w('#myId').text = data._id || 'No ID provided';
-        $w('#myEmail').text = data.email || 'No email provided';
-        $w('#myName').text = data.name || 'Your Name';
-        $w('#myRole').text = data.role || 'Member';
-        $w('#myTitle').text = data.title_fld || 'LVA';
-        $w('#myLocation').text = data.location || 'No location provided';
-        $w('#myContactEmail').text = data.contactEmail || 'No contact email provided';
-        $w('#myPhone').text = data.phone || 'No phone provided';
-        
-        console.log("✅ Profile display populated successfully");
-        
-    } catch (error) {
-        console.error("❌ Error populating profile display:", error);
-    }
+    });
 }
