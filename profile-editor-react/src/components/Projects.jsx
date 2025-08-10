@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react'
+import { isClient } from '../utils/roleUtils'
+import { sendGetMyApplicationsRequest } from '../utils/messageUtils'
+import { useMessageHandler } from '../hooks/useMessageHandler'
+import Loading from './Loading'
 import './Projects.css'
 
 const Projects = ({ memberData, setMemberData, statusMessage, statusType, setStatusMessage }) => {
@@ -6,48 +10,36 @@ const Projects = ({ memberData, setMemberData, statusMessage, statusType, setSta
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // all, new, pending, approved
 
-  // Check if user has client role - normalize to handle different cases
-  const normalizedRole = memberData?.role?.toString().toLowerCase()
-  const isClient = normalizedRole === 'client'
+  // Check if user has client role using utility function
+  const userIsClient = isClient(memberData)
 
   useEffect(() => {
-    if (!isClient) {
+    if (!userIsClient) {
       setStatusMessage("❌ Access denied. Client privileges required.")
       return
     }
 
     // Load user's applications from CMS
     loadMyApplications()
-  }, [isClient])
+  }, [userIsClient])
 
   const loadMyApplications = () => {
     setLoading(true)
-    // Request user's applications data from parent (Wix)
-    window.parent.postMessage({ 
-      type: "getMyApplications",
-      payload: {
-        memberId: memberData._id || memberData.id
-      }
-    }, "*")
+    const memberId = memberData._id || memberData.id
+    sendGetMyApplicationsRequest(memberId)
   }
 
-  // Handle messages from parent
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (!event.data || !event.data.type) return
-
-      if (event.data.type === "myApplicationsData") {
-        setMyApplications(event.data.applications || [])
-        setLoading(false)
-      } else if (event.data.type === "myApplicationsError") {
-        setStatusMessage("❌ Error loading applications: " + (event.data.error || "Unknown error"))
-        setLoading(false)
-      }
+  // Use custom hook for message handling
+  useMessageHandler({
+    onMyApplicationsData: (data) => {
+      setMyApplications(data.applications || [])
+      setLoading(false)
+    },
+    onMyApplicationsError: (data) => {
+      setStatusMessage("❌ Error loading applications: " + (data.error || "Unknown error"))
+      setLoading(false)
     }
-
-    window.addEventListener("message", handleMessage)
-    return () => window.removeEventListener("message", handleMessage)
-  }, [])
+  })
 
   const filteredApplications = myApplications.filter(app => {
     if (filter === 'all') return true
@@ -80,7 +72,7 @@ const Projects = ({ memberData, setMemberData, statusMessage, statusType, setSta
     }
   }
 
-  if (!isClient) {
+  if (!userIsClient) {
     return (
       <div className="projects">
         <div className="access-denied">
@@ -127,9 +119,7 @@ const Projects = ({ memberData, setMemberData, statusMessage, statusType, setSta
 
       <div className="applications-list">
         {loading ? (
-          <div className="loading">
-            <p>Loading your applications...</p>
-          </div>
+          <Loading message="Loading your applications..." />
         ) : filteredApplications.length === 0 ? (
           <div className="no-applications">
             <div className="empty-state">

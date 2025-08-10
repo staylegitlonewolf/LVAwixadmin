@@ -1,4 +1,12 @@
 import { useState, useEffect } from 'react'
+import { isAdmin } from '../utils/roleUtils'
+import { 
+  sendGetApplicationsRequest, 
+  sendApplicationStatusUpdate, 
+  sendApplicationDeleteRequest 
+} from '../utils/messageUtils'
+import { useMessageHandler } from '../hooks/useMessageHandler'
+import Loading from './Loading'
 import './Admin.css'
 
 const Admin = ({ memberData, setMemberData, statusMessage, statusType, setStatusMessage }) => {
@@ -6,63 +14,49 @@ const Admin = ({ memberData, setMemberData, statusMessage, statusType, setStatus
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // all, new, pending, approved
 
-  // Check if user has admin role - normalize to handle different cases
-  const normalizedRole = memberData?.role?.toString().toLowerCase()
-  const isAdmin = normalizedRole === 'admin'
+  // Check if user has admin role using utility function
+  const userIsAdmin = isAdmin(memberData)
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!userIsAdmin) {
       setStatusMessage("❌ Access denied. Admin privileges required.")
       return
     }
 
     // Load applications from CMS
     loadApplications()
-  }, [isAdmin])
+  }, [userIsAdmin])
 
   const loadApplications = () => {
     setLoading(true)
-    // Request applications data from parent (Wix)
-    window.parent.postMessage({ 
-      type: "getApplications" 
-    }, "*")
+    sendGetApplicationsRequest()
   }
 
-  // Handle messages from parent
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (!event.data || !event.data.type) return
-
-      if (event.data.type === "applicationsData") {
-        setApplications(event.data.applications || [])
-        setLoading(false)
-      } else if (event.data.type === "applicationUpdateSuccess") {
-        setStatusMessage("✅ Application updated successfully!")
-        loadApplications() // Reload the list
-      } else if (event.data.type === "applicationUpdateError") {
-        setStatusMessage("❌ Error updating application: " + (event.data.error || "Unknown error"))
-      } else if (event.data.type === "applicationDeleteSuccess") {
-        setStatusMessage("✅ Application removed successfully!")
-        loadApplications() // Reload the list
-      } else if (event.data.type === "applicationDeleteError") {
-        setStatusMessage("❌ Error removing application: " + (event.data.error || "Unknown error"))
-      }
+  // Use custom hook for message handling
+  useMessageHandler({
+    onApplicationsData: (data) => {
+      setApplications(data.applications || [])
+      setLoading(false)
+    },
+    onApplicationUpdateSuccess: () => {
+      setStatusMessage("✅ Application updated successfully!")
+      loadApplications() // Reload the list
+    },
+    onApplicationUpdateError: (data) => {
+      setStatusMessage("❌ Error updating application: " + (data.error || "Unknown error"))
+    },
+    onApplicationDeleteSuccess: () => {
+      setStatusMessage("✅ Application removed successfully!")
+      loadApplications() // Reload the list
+    },
+    onApplicationDeleteError: (data) => {
+      setStatusMessage("❌ Error removing application: " + (data.error || "Unknown error"))
     }
-
-    window.addEventListener("message", handleMessage)
-    return () => window.removeEventListener("message", handleMessage)
-  }, [])
+  })
 
   const handleStatusUpdate = (applicationId, newStatus) => {
     setStatusMessage("⏳ Updating application...")
-    
-    window.parent.postMessage({ 
-      type: "updateApplicationStatus", 
-      payload: {
-        applicationId,
-        status: newStatus
-      }
-    }, "*")
+    sendApplicationStatusUpdate(applicationId, newStatus)
   }
 
   const handleDeleteApplication = (applicationId) => {
@@ -71,13 +65,7 @@ const Admin = ({ memberData, setMemberData, statusMessage, statusType, setStatus
     }
 
     setStatusMessage("⏳ Removing application...")
-    
-    window.parent.postMessage({ 
-      type: "deleteApplication", 
-      payload: {
-        applicationId
-      }
-    }, "*")
+    sendApplicationDeleteRequest(applicationId)
   }
 
   const filteredApplications = applications.filter(app => {
@@ -85,7 +73,7 @@ const Admin = ({ memberData, setMemberData, statusMessage, statusType, setStatus
     return app.status?.toLowerCase() === filter.toLowerCase()
   })
 
-  if (!isAdmin) {
+  if (!userIsAdmin) {
     return (
       <div className="admin">
         <div className="access-denied">
@@ -132,9 +120,7 @@ const Admin = ({ memberData, setMemberData, statusMessage, statusType, setStatus
 
       <div className="applications-list">
         {loading ? (
-          <div className="loading">
-            <p>Loading applications...</p>
-          </div>
+          <Loading message="Loading applications..." />
         ) : filteredApplications.length === 0 ? (
           <div className="no-applications">
             <p>No applications found.</p>

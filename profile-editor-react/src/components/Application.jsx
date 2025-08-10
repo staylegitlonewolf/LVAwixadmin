@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { validateRequired, validateEmail } from '../utils/validationUtils'
+import { sendApplicationSubmission } from '../utils/messageUtils'
 import './Application.css'
 
 const Application = ({ memberData, setMemberData, statusMessage, statusType, setStatusMessage }) => {
@@ -72,31 +74,29 @@ const Application = ({ memberData, setMemberData, statusMessage, statusType, set
     }))
   }
 
-  // Validate form
+  // Validate form using utility functions
   const validateForm = () => {
-    if (!applicationData.fullName.trim()) {
-      setStatusMessage("❌ Full name is required")
+    const nameError = validateRequired(applicationData.fullName, 'Full name')
+    if (nameError) {
+      setStatusMessage(nameError)
       return false
     }
 
-    if (!applicationData.emailAddress.trim()) {
-      setStatusMessage("❌ Email address is required")
+    const emailError = validateEmail(applicationData.emailAddress)
+    if (emailError) {
+      setStatusMessage(emailError)
       return false
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(applicationData.emailAddress.trim())) {
-      setStatusMessage("❌ Please enter a valid email address")
+    const siteNameError = validateRequired(applicationData.siteName, 'Site name')
+    if (siteNameError) {
+      setStatusMessage(siteNameError)
       return false
     }
 
-    if (!applicationData.siteName.trim()) {
-      setStatusMessage("❌ Site name is required")
-      return false
-    }
-
-    if (!applicationData.businessOverview.trim()) {
-      setStatusMessage("❌ Business overview is required")
+    const overviewError = validateRequired(applicationData.businessOverview, 'Business overview')
+    if (overviewError) {
+      setStatusMessage(overviewError)
       return false
     }
 
@@ -117,10 +117,7 @@ const Application = ({ memberData, setMemberData, statusMessage, statusType, set
       status: 'New'
     }
 
-    window.parent.postMessage({ 
-      type: "saveApplication", 
-      payload: submissionData 
-    }, "*")
+    sendApplicationSubmission(submissionData)
   }
 
 

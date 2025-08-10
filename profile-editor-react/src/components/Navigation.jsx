@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import { isAdmin, isClient, getRoleDisplayName } from '../utils/roleUtils'
 import './Navigation.css'
 
 const Navigation = ({ memberData }) => {
@@ -9,17 +10,9 @@ const Navigation = ({ memberData }) => {
     navigate(path)
   }
 
-  // Check user roles - normalize to handle different cases
-  const normalizedRole = memberData?.role?.toString().toLowerCase()
-  const isAdmin = normalizedRole === 'admin'
-  const isClient = normalizedRole === 'client'
-  
-  // Debug logging
-  console.log('Navigation - memberData:', memberData)
-  console.log('Navigation - role:', memberData?.role)
-  console.log('Navigation - normalizedRole:', normalizedRole)
-  console.log('Navigation - isAdmin:', isAdmin)
-  console.log('Navigation - isClient:', isClient)
+  // Check user roles using utility functions
+  const userIsAdmin = isAdmin(memberData)
+  const userIsClient = isClient(memberData)
   
   // More visible debug - this will show on the page
   if (!memberData || Object.keys(memberData).length === 0) {
@@ -33,10 +26,9 @@ const Navigation = ({ memberData }) => {
           <span className="brand-text">LVA Studio</span>
           {/* Debug info - remove after testing */}
           <div style={{ fontSize: '10px', color: 'white', marginTop: '2px' }}>
-            Role: {memberData?.role || 'undefined'} | 
-            Normalized: {normalizedRole || 'undefined'} | 
-            isAdmin: {isAdmin ? 'true' : 'false'} | 
-            isClient: {isClient ? 'true' : 'false'}
+            Role: {getRoleDisplayName(memberData?.role)} | 
+            isAdmin: {userIsAdmin ? 'true' : 'false'} | 
+            isClient: {userIsClient ? 'true' : 'false'}
             {(!memberData || Object.keys(memberData).length === 0) && 
               <span style={{ color: 'red' }}> | ⚠️ NO MEMBER DATA</span>
             }
@@ -69,7 +61,7 @@ const Navigation = ({ memberData }) => {
           </button>
 
           {/* Show Admin link only for Admin users */}
-          {isAdmin && (
+          {userIsAdmin && (
             <button 
               className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
               onClick={() => handleNavigation('/admin')}
@@ -80,7 +72,7 @@ const Navigation = ({ memberData }) => {
           )}
 
           {/* Show Projects link only for Client users */}
-          {isClient && (
+          {userIsClient && (
             <button 
               className={`nav-link ${location.pathname === '/projects' ? 'active' : ''}`}
               onClick={() => handleNavigation('/projects')}

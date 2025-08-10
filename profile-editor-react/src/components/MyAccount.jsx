@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { validateRequired, validateEmail, validatePhone } from '../utils/validationUtils'
+import { sendSaveDataMessage, sendLogoutRequest } from '../utils/messageUtils'
 import './MyAccount.css'
 
 const MyAccount = ({ memberData, setMemberData, statusMessage, statusType, setStatusMessage }) => {
@@ -35,28 +37,23 @@ const MyAccount = ({ memberData, setMemberData, statusMessage, statusType, setSt
     }
   }
 
-  // Validate form data
+  // Validate form data using utility functions
   const validateForm = () => {
-    if (!formData.name.trim()) {
-      setStatusMessage("❌ Name is required")
+    const nameError = validateRequired(formData.name, 'Name')
+    if (nameError) {
+      setStatusMessage(nameError)
       return false
     }
 
-    if (!formData.contactEmail.trim()) {
-      setStatusMessage("❌ Contact email is required")
+    const emailError = validateEmail(formData.contactEmail)
+    if (emailError) {
+      setStatusMessage(emailError)
       return false
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(formData.contactEmail.trim())) {
-      setStatusMessage("❌ Please enter a valid email address")
-      return false
-    }
-
-    // Phone validation (optional but if provided, should be valid)
-    if (formData.phone.trim() && !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/[\s\-\(\)]/g, ''))) {
-      setStatusMessage("❌ Please enter a valid phone number")
+    const phoneError = validatePhone(formData.phone)
+    if (phoneError) {
+      setStatusMessage(phoneError)
       return false
     }
 
@@ -78,14 +75,14 @@ const MyAccount = ({ memberData, setMemberData, statusMessage, statusType, setSt
       email: memberData.email || '', // included for reference (readonly)
     }
 
-    window.parent.postMessage({ type: "saveData", payload: updatedData }, "*")
+    sendSaveDataMessage(updatedData)
   }
 
   // Handle logout
   const handleLogout = () => {
     if (confirm("Are you sure you want to logout?")) {
       setStatusMessage("⏳ Logging out...")
-      window.parent.postMessage({ type: "logoutRequest" }, "*")
+      sendLogoutRequest()
     }
   }
 
