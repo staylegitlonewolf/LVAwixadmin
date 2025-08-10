@@ -1,202 +1,82 @@
-//MyProfile Wix Velo
+//MyProfile Wix Velo - Display/View Only
 import wixData from 'wix-data';
-import { authentication } from 'wix-members';
-import { getCurrentMemberId } from 'public/repeatFunctions.js';
 import wixLocation from 'wix-location';
+import { getCurrentMemberId } from 'public/repeatFunctions.js';
 
-let currentMemberId;
-let memberData = {};
-let uploadedImageUrl = "";
+let selectedMemberId, currentMemberId;
+let profileData = {}; 
 
-// ===== On Ready =====
-$w.onReady(async function () {
-    try {
-        // Get logged-in member ID
-        currentMemberId = await getCurrentMemberId();
-        
-        if (!currentMemberId) {
-            console.error("No member ID found - user may not be logged in");
-            wixLocation.to('/login'); // Redirect to login if needed
-            return;
-        }
-
-        // Get member's profile data
-        memberData = await wixData.get("Main", currentMemberId);
-        
-        // Handle case where member data doesn't exist yet
-        if (!memberData) {
-            memberData = {
-                _id: currentMemberId,
-                role: "Member", // Default role
-                email: "", // Will be populated from authentication
-                name: "",
-                contactEmail: "",
-                phone: "",
-                address: "",
-                displayName: "",
-                bio: "",
-                website: "",
-                location: "",
-                interests: "",
-                socialLinks: {
-                    twitter: '',
-                    linkedin: '',
-                    instagram: ''
-                }
-            };
-        }
-
-        // Set profile photo if exists
-        if (memberData?.profilePhoto) {
-            $w('#myProfilePic').src = memberData.profilePhoto;
-            $w('#myProfilePic').show();
-        }
-
-        // Handle iframe messaging
-        setupIframeCommunication();
-
-        // Handle photo upload
-        setupPhotoUpload();
-
-    } catch (error) {
-        console.error("Error in onReady:", error);
-        showConfirmation("❌ Error loading profile data");
-    }
+$w.onReady(function () {
+    initPage(profileData);
+    goToProfilePage();
 });
 
-// ===== Iframe Communication Setup =====
-function setupIframeCommunication() {
-    $w('#profileIframe').onMessage(async (event) => {
-        if (!event.data) return;
-
-        try {
-            if (event.data === "ready") {
-                // Send current member data to iframe when it signals ready
-                $w('#profileIframe').postMessage(memberData);
-                console.log("✅ Sent member data to iframe");
-            }
-
-            if (event.data?.type === "logoutRequest") {
-                await handleLogout();
-            }
-
-            if (event.data?.type === "saveProfileData" && event.data.payload) {
-                await handleSaveProfileData(event.data.payload);
-            }
-
-        } catch (error) {
-            console.error("Error handling iframe message:", error);
-            $w('#profileIframe').postMessage({ 
-                type: "saveError", 
-                error: "Internal server error" 
-            });
-        }
-    });
+async function goToProfilePage() {
+    const selectedMemberObject = wixLocation.query;
+    const selectedMemberArr = Object.values(selectedMemberObject);
+    selectedMemberId = selectedMemberArr[0];
+    
+    // Get the current member's ID
+    currentMemberId = await getCurrentMemberId();
+    
+    if (currentMemberId === selectedMemberId) {   
+        // Fill out the profile template with the data from the ID of the page URL (selected member's ID)
+        profileData = await wixData.get('Main', currentMemberId);
+        console.log("✅ Loaded current member profile data:", profileData);
+    } else {
+        // Get the profile data of the selected member (viewing someone else's profile)
+        profileData = await wixData.get('Main', selectedMemberId);
+        console.log("✅ Loaded selected member profile data:", profileData);
+    }
+    
+    initPage(profileData);
 }
 
-// ===== Handle Save Profile Data =====
-async function handleSaveProfileData(payload) {
+// Initialize your profile page with data from the data collection
+function initPage(profileData) {
     try {
-        // Server-side validation
-        if (!payload.displayName || payload.displayName.trim().length === 0) {
-            throw new Error("Display name is required");
+        // Set profile photo
+        if (profileData?.profilePhoto) {
+            $w('#myProfilePic').src = profileData.profilePhoto;
+            $w('#myProfilePic').show();
+        } else {
+            $w('#myProfilePic').hide();
         }
         
-        // Website validation (optional but if provided, should be valid)
-        if (payload.website && payload.website.trim() && 
-            !/^https?:\/\/.+/.test(payload.website.trim())) {
-            throw new Error("Please enter a valid website URL (include http:// or https://)");
-        }
-
-        // Send saving status to iframe
-        $w('#profileIframe').postMessage({ type: "saving" });
-
-        // Merge payload with existing memberData
-        Object.assign(memberData, payload);
-
-        // If an uploadedImageUrl exists, keep it in memberData
-        if (uploadedImageUrl) {
-            memberData.profilePhoto = uploadedImageUrl;
-        }
-
-        // Save updated data
-        await saveMemberData(memberData);
-
-        // Send success message back to iframe
-        $w('#profileIframe').postMessage({ type: "saveSuccess" });
-        console.log("✅ Profile updated via iframe message");
-
-    } catch (err) {
-        console.error("Error saving profile data from iframe:", err);
-        $w('#profileIframe').postMessage({ 
-            type: "saveError", 
-            error: err.message 
-        });
-    }
-}
-
-// ===== Handle Logout =====
-async function handleLogout() {
-    try {
-        await authentication.logout();
-        wixLocation.to('/');
-    } catch (error) {
-        console.error('Error during logout:', error);
-        showConfirmation("❌ Error during logout");
-    }
-}
-
-// ===== Photo Upload Setup =====
-function setupPhotoUpload() {
-    $w("#myUploadButton").onChange(() => {
-        const file = $w("#myUploadButton").value;
-        if (!file) return;
-
-        // Show loading state
-        showConfirmation("⏳ Uploading photo...");
-
-        $w("#myUploadButton").startUpload()
-            .then(uploadedFile => {
-                uploadedImageUrl = uploadedFile.url;
-                $w("#myProfilePic").src = uploadedImageUrl;
-                $w("#myProfilePic").show();
-                showConfirmation("✅ Photo uploaded successfully!");
-            })
-            .catch((error) => {
-                console.error("Upload error:", error);
-                $w("#myProfilePic").hide();
-                showConfirmation("❌ Upload failed. Please try again.");
-            });
-    });
-}
-
-// ===== Save Member Data =====
-async function saveMemberData(updatedData, redirect = false) {
-    try {
-        const newData = { ...updatedData };
+        // Set text fields
+        $w('#myName').text = profileData?.name || 'No name provided';
+        $w('#myEmail').text = profileData?.email || 'No email provided';
+        $w('#mySubtitle').text = profileData?.subtitle || 'No subtitle provided';
         
-        // Ensure we have the required _id field
-        if (!newData._id) {
-            newData._id = currentMemberId;
+        // Set additional profile fields if they exist
+        if (profileData?.displayName) {
+            $w('#myDisplayName').text = profileData.displayName;
         }
-
-        await wixData.update("Main", newData);
-        console.log("✅ Profile updated");
-
-        if (redirect) {
-            wixLocation.to(`/my-profile-page?member=${currentMemberId}`);
+        
+        if (profileData?.bio) {
+            $w('#myBio').text = profileData.bio;
         }
+        
+        if (profileData?.location) {
+            $w('#myLocation').text = profileData.location;
+        }
+        
+        if (profileData?.interests) {
+            $w('#myInterests').text = profileData.interests;
+        }
+        
+        if (profileData?.website) {
+            $w('#myWebsite').text = profileData.website;
+        }
+        
+        console.log("✅ Profile page initialized successfully");
+        
     } catch (error) {
-        console.error("Error saving member data:", error);
-        throw new Error("Failed to save profile data");
+        console.error("❌ Error initializing profile page:", error);
     }
 }
 
-// ===== Confirmation Message =====
-function showConfirmation(message) {
-    $w('#confirmText').text = message;
-    $w('#confirmText').show();
-    setTimeout(() => {
-        $w('#confirmText').hide();
-    }, 3000);
-}
+// When the path (member ID changes)
+wixLocation.onChange((location) => {
+    goToProfilePage();
+});

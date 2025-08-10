@@ -1,5 +1,7 @@
+//MyAccount Wix Velo - Edit Profile
+
 import wixData from 'wix-data';
-import wixWindow from 'wix-window';
+
 import { authentication } from 'wix-members';
 import { getCurrentMemberId } from 'public/repeatFunctions.js';
 import wixLocation from 'wix-location';
@@ -65,13 +67,13 @@ $w.onReady(async function () {
 
 // ===== Iframe Communication Setup =====
 function setupIframeCommunication() {
-    $w('#profileIframe').onMessage(async (event) => {
+    $w('#myaccountIframe').onMessage(async (event) => {
         if (!event.data) return;
 
         try {
             if (event.data === "ready") {
                 // Send current member data to iframe when it signals ready
-                $w('#profileIframe').postMessage(memberData);
+                $w('#myaccountIframe').postMessage(memberData);
                 console.log("✅ Sent member data to iframe");
             }
 
@@ -85,7 +87,7 @@ function setupIframeCommunication() {
 
         } catch (error) {
             console.error("Error handling iframe message:", error);
-            $w('#profileIframe').postMessage({ 
+            $w('#myaccountIframe').postMessage({ 
                 type: "saveError", 
                 error: "Internal server error" 
             });
@@ -113,7 +115,7 @@ async function handleSaveData(payload) {
         }
 
         // Send saving status to iframe
-        $w('#profileIframe').postMessage({ type: "saving" });
+        $w('#myaccountIframe').postMessage({ type: "saving" });
 
         // Merge payload with existing memberData
         Object.assign(memberData, payload);
@@ -127,12 +129,12 @@ async function handleSaveData(payload) {
         await saveMemberData(memberData);
 
         // Send success message back to iframe
-        $w('#profileIframe').postMessage({ type: "saveSuccess" });
+        $w('#myaccountIframe').postMessage({ type: "saveSuccess" });
         console.log("✅ Profile updated via iframe message");
 
     } catch (err) {
         console.error("Error saving profile data from iframe:", err);
-        $w('#profileIframe').postMessage({ 
+        $w('#myaccountIframe').postMessage({ 
             type: "saveError", 
             error: err.message 
         });
