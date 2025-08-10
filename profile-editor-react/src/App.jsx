@@ -15,6 +15,7 @@ function App() {
 
   // Tell parent we're ready to receive data
   useEffect(() => {
+    console.log('App: Component mounted, sending ready message to parent')
     window.parent.postMessage("ready", "*")
   }, [])
 
@@ -25,6 +26,7 @@ function App() {
 
       // Initial data from parent (no type)
       if (typeof event.data === "object" && !event.data.type) {
+        console.log('App: Received memberData from parent:', event.data)
         setMemberData(event.data)
         setStatusMessage('')
       }

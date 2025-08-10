@@ -12,12 +12,32 @@ const Navigation = ({ memberData }) => {
   // Check user roles
   const isAdmin = memberData?.role === 'Admin'
   const isClient = memberData?.role === 'Client'
+  
+  // Debug logging
+  console.log('Navigation - memberData:', memberData)
+  console.log('Navigation - role:', memberData?.role)
+  console.log('Navigation - isAdmin:', isAdmin)
+  console.log('Navigation - isClient:', isClient)
+  
+  // More visible debug - this will show on the page
+  if (!memberData || Object.keys(memberData).length === 0) {
+    console.warn('⚠️ Navigation: memberData is empty or undefined')
+  }
 
   return (
     <nav className="navigation">
       <div className="nav-container">
         <div className="nav-brand">
           <span className="brand-text">LVA Studio</span>
+          {/* Debug info - remove after testing */}
+          <div style={{ fontSize: '10px', color: 'white', marginTop: '2px' }}>
+            Role: {memberData?.role || 'undefined'} | 
+            isAdmin: {isAdmin ? 'true' : 'false'} | 
+            isClient: {isClient ? 'true' : 'false'}
+            {(!memberData || Object.keys(memberData).length === 0) && 
+              <span style={{ color: 'red' }}> | ⚠️ NO MEMBER DATA</span>
+            }
+          </div>
         </div>
         
         <div className="nav-links">
