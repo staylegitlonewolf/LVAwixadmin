@@ -8,7 +8,7 @@ const MyProfile = ({ memberData, setMemberData, statusMessage, statusType, setSt
     name: '',
     role: '',
     title_fld: '',
-    location: '',
+    address: '',
     contactEmail: '',
     phone: '',
     profilePhoto: ''
@@ -23,7 +23,7 @@ const MyProfile = ({ memberData, setMemberData, statusMessage, statusType, setSt
         name: memberData.name || 'Your Name',
         role: memberData.role || 'Member',
         title_fld: memberData.title_fld || 'LVA',
-        location: memberData.location || '',
+        address: memberData.address || '',
         contactEmail: memberData.contactEmail || '',
         phone: memberData.phone || '',
         profilePhoto: memberData.profilePhoto || ''
@@ -79,8 +79,8 @@ const MyProfile = ({ memberData, setMemberData, statusMessage, statusType, setSt
           </div>
           
           <div className="info-item">
-            <label>Location:</label>
-            <span>{profileData.location || 'No location provided'}</span>
+            <label>Address:</label>
+            <span>{profileData.address || 'No location provided'}</span>
           </div>
           
           <div className="info-item">
