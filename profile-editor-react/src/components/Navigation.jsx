@@ -85,6 +85,15 @@ const Navigation = ({ memberData }) => {
               <span className="nav-text">Projects</span>
             </button>
           )}
+
+          {/* Debug button - always visible for development */}
+          <button 
+            className={`nav-link ${location.pathname === '/debug' ? 'active' : ''}`}
+            onClick={() => handleNavigation('/debug')}
+          >
+            <span className="nav-icon">🐛</span>
+            <span className="nav-text">Debug</span>
+          </button>
         </div>
       </div>
     </nav>
