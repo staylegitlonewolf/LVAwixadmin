@@ -93,6 +93,22 @@ function setupIframeCommunication() {
                 await handleSaveApplication(event.data.payload);
             }
 
+            if (event.data?.type === "getApplications") {
+                await handleGetApplications();
+            }
+
+            if (event.data?.type === "getMyApplications" && event.data.payload) {
+                await handleGetMyApplications(event.data.payload.memberId);
+            }
+
+            if (event.data?.type === "updateApplicationStatus" && event.data.payload) {
+                await handleUpdateApplicationStatus(event.data.payload);
+            }
+
+            if (event.data?.type === "deleteApplication" && event.data.payload) {
+                await handleDeleteApplication(event.data.payload.applicationId);
+            }
+
         } catch (error) {
             console.error("Error handling iframe message:", error);
             $w('#myaccountIframe').postMessage({ 
@@ -245,4 +261,96 @@ function showConfirmation(message) {
     setTimeout(() => {
         $w('#confirmText').hide();
     }, 3000);
+}
+
+// ===== Handle Get Applications (Admin) =====
+async function handleGetApplications() {
+    try {
+        // Get all applications from the Applications collection
+        const applications = await wixData.query("Applications")
+            .find()
+            .then(results => results.items);
+
+        // Send applications data back to iframe
+        $w('#myaccountIframe').postMessage({ 
+            type: "applicationsData", 
+            applications: applications 
+        });
+        console.log("✅ Sent applications data to iframe:", applications.length, "applications");
+
+    } catch (err) {
+        console.error("Error getting applications:", err);
+        $w('#myaccountIframe').postMessage({ 
+            type: "applicationsError", 
+            error: err.message 
+        });
+    }
+}
+
+// ===== Handle Get My Applications (Client) =====
+async function handleGetMyApplications(memberId) {
+    try {
+        // Get applications for specific member
+        const applications = await wixData.query("Applications")
+            .eq("memberId", memberId)
+            .find()
+            .then(results => results.items);
+
+        // Send applications data back to iframe
+        $w('#myaccountIframe').postMessage({ 
+            type: "myApplicationsData", 
+            applications: applications 
+        });
+        console.log("✅ Sent my applications data to iframe:", applications.length, "applications");
+
+    } catch (err) {
+        console.error("Error getting my applications:", err);
+        $w('#myaccountIframe').postMessage({ 
+            type: "myApplicationsError", 
+            error: err.message 
+        });
+    }
+}
+
+// ===== Handle Update Application Status =====
+async function handleUpdateApplicationStatus(payload) {
+    try {
+        const { applicationId, status } = payload;
+
+        // Update the application status
+        await wixData.update("Applications", {
+            _id: applicationId,
+            status: status
+        });
+
+        // Send success message back to iframe
+        $w('#myaccountIframe').postMessage({ type: "applicationUpdateSuccess" });
+        console.log("✅ Application status updated:", applicationId, "to", status);
+
+    } catch (err) {
+        console.error("Error updating application status:", err);
+        $w('#myaccountIframe').postMessage({ 
+            type: "applicationUpdateError", 
+            error: err.message 
+        });
+    }
+}
+
+// ===== Handle Delete Application =====
+async function handleDeleteApplication(applicationId) {
+    try {
+        // Remove the application
+        await wixData.remove("Applications", applicationId);
+
+        // Send success message back to iframe
+        $w('#myaccountIframe').postMessage({ type: "applicationDeleteSuccess" });
+        console.log("✅ Application deleted:", applicationId);
+
+    } catch (err) {
+        console.error("Error deleting application:", err);
+        $w('#myaccountIframe').postMessage({ 
+            type: "applicationDeleteError", 
+            error: err.message 
+        });
+    }
 }

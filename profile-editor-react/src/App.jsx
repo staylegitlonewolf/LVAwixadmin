@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { sendReadyMessage } from './utils/messageUtils'
 import { useMessageHandler } from './hooks/useMessageHandler'
 import './App.css'
@@ -8,30 +8,8 @@ import MyAccount from './components/MyAccount'
 import Application from './components/Application'
 import Admin from './components/Admin'
 import Projects from './components/Projects'
-import Debug from './components/Debug'
 import Navigation from './components/Navigation'
 import ErrorBoundary from './components/ErrorBoundary'
-
-// Keyboard shortcut component
-const KeyboardShortcuts = ({ children }) => {
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      // Ctrl+Alt+D for Debug page
-      if (event.ctrlKey && event.altKey && event.key === 'd') {
-        event.preventDefault()
-        console.log('🔧 Debug shortcut triggered!')
-        navigate('/debug')
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [navigate])
-
-  return children
-}
 
 function App() {
   const [memberData, setMemberData] = useState({})
@@ -85,75 +63,54 @@ function App() {
   return (
     <ErrorBoundary>
       <Router>
-        <KeyboardShortcuts>
-          <div className="App">
-            <Navigation memberData={memberData} />
-            <Routes>
-              <Route path="/home" element={
-                <Home 
-                  memberData={memberData}
-                  setMemberData={setMemberData}
-                />
-              } />
-              <Route path="/myaccount" element={
-                <MyAccount 
-                  memberData={memberData}
-                  setMemberData={setMemberData}
-                  statusMessage={statusMessage}
-                  statusType={statusType}
-                  setStatusMessage={setStatusMessage}
-                />
-              } />
-              <Route path="/application" element={
-                <Application 
-                  memberData={memberData}
-                  setMemberData={setMemberData}
-                  statusMessage={statusMessage}
-                  statusType={statusType}
-                  setStatusMessage={setStatusMessage}
-                />
-              } />
-              <Route path="/admin" element={
-                <Admin 
-                  memberData={memberData}
-                  setMemberData={setMemberData}
-                  statusMessage={statusMessage}
-                  statusType={statusType}
-                  setStatusMessage={setStatusMessage}
-                />
-              } />
-              <Route path="/projects" element={
-                <Projects 
-                  memberData={memberData}
-                  setMemberData={setMemberData}
-                  statusMessage={statusMessage}
-                  statusType={statusType}
-                  setStatusMessage={setStatusMessage}
-                />
-              } />
-              <Route path="/debug" element={
-                <div>
-                  <h1>Debug Route Working!</h1>
-                  <Debug 
-                    memberData={memberData}
-                    setMemberData={setMemberData}
-                    statusMessage={statusMessage}
-                    statusType={statusType}
-                    setStatusMessage={setStatusMessage}
-                  />
-                </div>
-              } />
-              <Route path="/test" element={
-                <div style={{ padding: '20px', textAlign: 'center' }}>
-                  <h1>🧪 Test Route Working!</h1>
-                  <p>If you can see this, routing is working correctly.</p>
-                  <p>Current memberData: {JSON.stringify(memberData)}</p>
-                </div>
-              } />
-              <Route path="/" element={<Navigate to="/home" replace />} />
-            </Routes>
-          </div>
-        </KeyboardShortcuts>
+        <div className="App">
+          <Navigation memberData={memberData} />
+          <Routes>
+            <Route path="/home" element={
+              <Home 
+                memberData={memberData}
+                setMemberData={setMemberData}
+              />
+            } />
+            <Route path="/myaccount" element={
+              <MyAccount 
+                memberData={memberData}
+                setMemberData={setMemberData}
+                statusMessage={statusMessage}
+                statusType={statusType}
+                setStatusMessage={setStatusMessage}
+              />
+            } />
+            <Route path="/application" element={
+              <Application 
+                memberData={memberData}
+                setMemberData={setMemberData}
+                statusMessage={statusMessage}
+                statusType={statusType}
+                setStatusMessage={setStatusMessage}
+              />
+            } />
+            <Route path="/admin" element={
+              <Admin 
+                memberData={memberData}
+                setMemberData={setMemberData}
+                statusMessage={statusMessage}
+                statusType={statusType}
+                setStatusMessage={setStatusMessage}
+              />
+            } />
+            <Route path="/projects" element={
+              <Projects 
+                memberData={memberData}
+                setMemberData={setMemberData}
+                statusMessage={statusMessage}
+                statusType={statusType}
+                setStatusMessage={setStatusMessage}
+              />
+            } />
+            <Route path="/" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </div>
       </Router>
     </ErrorBoundary>
   )
