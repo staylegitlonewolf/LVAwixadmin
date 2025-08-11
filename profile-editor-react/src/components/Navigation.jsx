@@ -6,6 +6,9 @@ const Navigation = ({ memberData }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
+  // Debug: Log when Navigation renders
+  console.log('🧭 Navigation rendering with memberData:', memberData)
+
   const handleNavigation = (path) => {
     navigate(path)
   }
@@ -40,6 +43,7 @@ const Navigation = ({ memberData }) => {
         </div>
         
         <div className="nav-links">
+          {/* Always show these basic navigation links */}
           <button 
             className={`nav-link ${location.pathname === '/home' ? 'active' : ''}`}
             onClick={() => handleNavigation('/home')}
@@ -86,10 +90,11 @@ const Navigation = ({ memberData }) => {
             </button>
           )}
 
-          {/* Debug button - always visible for development */}
+          {/* Debug button - ALWAYS visible for development */}
           <button 
             className={`nav-link ${location.pathname === '/debug' ? 'active' : ''}`}
             onClick={() => handleNavigation('/debug')}
+            style={{ backgroundColor: '#ff6b6b', borderColor: '#ff6b6b' }}
           >
             <span className="nav-icon">🐛</span>
             <span className="nav-text">Debug</span>
