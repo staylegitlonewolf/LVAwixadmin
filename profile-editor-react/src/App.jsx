@@ -132,13 +132,23 @@ function App() {
                 />
               } />
               <Route path="/debug" element={
-                <Debug 
-                  memberData={memberData}
-                  setMemberData={setMemberData}
-                  statusMessage={statusMessage}
-                  statusType={statusType}
-                  setStatusMessage={setStatusMessage}
-                />
+                <div>
+                  <h1>Debug Route Working!</h1>
+                  <Debug 
+                    memberData={memberData}
+                    setMemberData={setMemberData}
+                    statusMessage={statusMessage}
+                    statusType={statusType}
+                    setStatusMessage={setStatusMessage}
+                  />
+                </div>
+              } />
+              <Route path="/test" element={
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <h1>🧪 Test Route Working!</h1>
+                  <p>If you can see this, routing is working correctly.</p>
+                  <p>Current memberData: {JSON.stringify(memberData)}</p>
+                </div>
               } />
               <Route path="/" element={<Navigate to="/home" replace />} />
             </Routes>

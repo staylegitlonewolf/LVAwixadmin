@@ -127,6 +127,24 @@ const Navigation = ({ memberData }) => {
               <span className="nav-icon">🐛</span>
               <span className="nav-text">Debug</span>
             </button>
+
+            {/* Test button - for debugging routing */}
+            <button 
+              className={`nav-link ${location.pathname === '/test' ? 'active' : ''}`}
+              onClick={() => handleNavigation('/test')}
+              style={{ 
+                backgroundColor: '#4caf50', 
+                borderColor: '#4caf50',
+                display: 'inline-block !important',
+                visibility: 'visible !important',
+                opacity: '1 !important',
+                position: 'relative !important',
+                zIndex: '9999 !important'
+              }}
+            >
+              <span className="nav-icon">🧪</span>
+              <span className="nav-text">Test</span>
+            </button>
           </div>
         </div>
       </nav>
