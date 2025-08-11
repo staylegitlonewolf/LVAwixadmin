@@ -1,10 +1,9 @@
 //MyAccount Wix Velo - Edit Profile
 
-import wixData from 'wix-data';
-
-import { authentication } from 'wix-members';
+import { items } from '@wix/data';
+import { authentication } from '@wix/members';
 import { getCurrentMemberId } from 'public/repeatFunctions.js';
-import wixLocation from 'wix-location';
+import { location } from '@wix/site-location';
 
 let currentMemberId;
 let memberData = {};
@@ -18,12 +17,12 @@ $w.onReady(async function () {
         
         if (!currentMemberId) {
             console.error("No member ID found - user may not be logged in");
-            wixLocation.to('/login'); // Redirect to login if needed
+            location.to('/login'); // Redirect to login if needed
             return;
         }
 
         // Get member's profile data
-        memberData = await wixData.get("Main", currentMemberId);
+        memberData = await items.get("Main", currentMemberId);
         
         // Handle case where member data doesn't exist yet
         if (!memberData) {
@@ -86,7 +85,7 @@ function setupIframeCommunication() {
             }
 
             if (event.data?.type === "navigateToApplication") {
-                wixLocation.to('/application');
+                location.to('/application');
             }
 
             if (event.data?.type === "saveApplication" && event.data.payload) {
@@ -180,7 +179,7 @@ async function handleSaveApplication(payload) {
             status: 'Pending'
         };
 
-        await wixData.insert("Applications", applicationData);
+        await items.insert("Applications", applicationData);
 
         // Send success message back to iframe
         $w('#myaccountIframe').postMessage({ type: "applicationSuccess" });
@@ -199,7 +198,7 @@ async function handleSaveApplication(payload) {
 async function handleLogout() {
     try {
         await authentication.logout();
-        wixLocation.to('/');
+        location.to('/');
     } catch (error) {
         console.error('Error during logout:', error);
         showConfirmation("❌ Error during logout");
@@ -242,11 +241,11 @@ async function saveMemberData(updatedData, redirect = false) {
             newData._id = currentMemberId;
         }
 
-        await wixData.update("Main", newData);
+        await items.update("Main", newData);
         console.log("✅ Profile updated");
 
         if (redirect) {
-            wixLocation.to(`/my-profile-page?member=${currentMemberId}`);
+            location.to(`/my-profile-page?member=${currentMemberId}`);
         }
     } catch (error) {
         console.error("Error saving member data:", error);
@@ -267,7 +266,7 @@ function showConfirmation(message) {
 async function handleGetApplications() {
     try {
         // Get all applications from the Applications collection
-        const applications = await wixData.query("Applications")
+        const applications = await items.query("Applications")
             .find()
             .then(results => results.items);
 
@@ -291,7 +290,7 @@ async function handleGetApplications() {
 async function handleGetMyApplications(memberId) {
     try {
         // Get applications for specific member
-        const applications = await wixData.query("Applications")
+        const applications = await items.query("Applications")
             .eq("memberId", memberId)
             .find()
             .then(results => results.items);
@@ -318,7 +317,7 @@ async function handleUpdateApplicationStatus(payload) {
         const { applicationId, status } = payload;
 
         // Update the application status
-        await wixData.update("Applications", {
+        await items.update("Applications", {
             _id: applicationId,
             status: status
         });
@@ -340,7 +339,7 @@ async function handleUpdateApplicationStatus(payload) {
 async function handleDeleteApplication(applicationId) {
     try {
         // Remove the application
-        await wixData.remove("Applications", applicationId);
+        await items.remove("Applications", applicationId);
 
         // Send success message back to iframe
         $w('#myaccountIframe').postMessage({ type: "applicationDeleteSuccess" });
