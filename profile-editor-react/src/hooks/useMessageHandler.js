@@ -27,6 +27,16 @@ export const useMessageHandler = (handlers) => {
       console.log('🔍 Message type:', event.data.type)
       console.log('🔍 Full event data:', event.data)
 
+      // Dispatch custom event for Debug component
+      const debugEvent = new CustomEvent('debugLog', {
+        detail: {
+          type: 'message',
+          message: `Received message: ${JSON.stringify(event.data)}`,
+          timestamp: new Date().toISOString()
+        }
+      })
+      window.dispatchEvent(debugEvent)
+
       const { type } = event.data
 
       // Handle different message types
@@ -75,6 +85,17 @@ export const useMessageHandler = (handlers) => {
           if (typeof event.data === "object" && !event.data.type) {
             console.log('✅ Received initial data:', event.data)
             console.log('✅ Role from data:', event.data.role)
+            
+            // Dispatch custom event for Debug component
+            const initialDataEvent = new CustomEvent('debugLog', {
+              detail: {
+                type: 'initialData',
+                message: `Initial data received: ${JSON.stringify(event.data)}`,
+                timestamp: new Date().toISOString()
+              }
+            })
+            window.dispatchEvent(initialDataEvent)
+            
             handlers.onInitialData?.(event.data)
           }
           break
