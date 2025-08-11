@@ -8,25 +8,27 @@
  * @returns {string} Normalized role in lowercase
  */
 export const normalizeRole = (role) => {
-  return role?.toString().toLowerCase() || ''
+  return role?.toString().toLowerCase().trim() || ''
 }
 
 /**
- * Check if user has admin role
+ * Check if user has admin role (case-insensitive)
  * @param {Object} memberData - User member data object
  * @returns {boolean} True if user is admin
  */
 export const isAdmin = (memberData) => {
-  return normalizeRole(memberData?.role) === 'admin'
+  const role = normalizeRole(memberData?.role)
+  return role === 'admin'
 }
 
 /**
- * Check if user has client role
+ * Check if user has client role (case-insensitive)
  * @param {Object} memberData - User member data object
  * @returns {boolean} True if user is client
  */
 export const isClient = (memberData) => {
-  return normalizeRole(memberData?.role) === 'client'
+  const role = normalizeRole(memberData?.role)
+  return role === 'client'
 }
 
 /**

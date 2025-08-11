@@ -22,6 +22,11 @@ export const useMessageHandler = (handlers) => {
     const handleMessage = (event) => {
       if (!event.data) return
 
+      // Debug logging
+      console.log('🔍 Received message from parent:', event.data)
+      console.log('🔍 Message type:', event.data.type)
+      console.log('🔍 Full event data:', event.data)
+
       const { type } = event.data
 
       // Handle different message types
@@ -68,6 +73,8 @@ export const useMessageHandler = (handlers) => {
         default:
           // Handle initial data from parent (no type)
           if (typeof event.data === "object" && !event.data.type) {
+            console.log('✅ Received initial data:', event.data)
+            console.log('✅ Role from data:', event.data.role)
             handlers.onInitialData?.(event.data)
           }
           break

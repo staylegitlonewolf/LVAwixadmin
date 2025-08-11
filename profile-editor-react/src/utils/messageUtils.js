@@ -10,6 +10,7 @@
  */
 export const sendMessageToParent = (message) => {
   try {
+    console.log('📤 Sending message to parent:', message)
     window.parent.postMessage(message, "*")
   } catch (error) {
     console.error('Error sending message to parent:', error)
@@ -20,6 +21,7 @@ export const sendMessageToParent = (message) => {
  * Send ready message to parent
  */
 export const sendReadyMessage = () => {
+  console.log('📤 Sending ready message to parent...')
   sendMessageToParent("ready")
 }
 

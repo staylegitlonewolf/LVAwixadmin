@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { isAdmin, isClient, getRoleDisplayName } from '../utils/roleUtils'
+import { isAdmin, isClient, getRoleDisplayName, normalizeRole } from '../utils/roleUtils'
 import './Navigation.css'
 
 const Navigation = ({ memberData }) => {
@@ -14,7 +14,10 @@ const Navigation = ({ memberData }) => {
   const userIsAdmin = isAdmin(memberData)
   const userIsClient = isClient(memberData)
   
-  // More visible debug - this will show on the page
+  // Debug information
+  const rawRole = memberData?.role
+  const normalizedRole = normalizeRole(memberData?.role)
+  
   if (!memberData || Object.keys(memberData).length === 0) {
     console.warn('⚠️ Navigation: memberData is empty or undefined')
   }
@@ -26,7 +29,8 @@ const Navigation = ({ memberData }) => {
           <span className="brand-text">LVA Studio</span>
           {/* Debug info - remove after testing */}
           <div style={{ fontSize: '10px', color: 'white', marginTop: '2px' }}>
-            Role: {getRoleDisplayName(memberData?.role)} | 
+            Raw Role: "{rawRole}" | 
+            Normalized: "{normalizedRole}" | 
             isAdmin: {userIsAdmin ? 'true' : 'false'} | 
             isClient: {userIsClient ? 'true' : 'false'}
             {(!memberData || Object.keys(memberData).length === 0) && 

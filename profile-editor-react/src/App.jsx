@@ -16,14 +16,21 @@ function App() {
   const [statusMessage, setStatusMessage] = useState('')
   const [statusType, setStatusType] = useState('info')
 
+  // Debug: Verify React app is loading
+  console.log('🚀 React App is loading...')
+
   // Tell parent we're ready to receive data
   useEffect(() => {
+    console.log('📡 Sending ready message to parent...')
     sendReadyMessage()
   }, [])
 
   // Use custom hook for message handling
   useMessageHandler({
     onInitialData: (data) => {
+      console.log('🎯 App.jsx: Received initial data:', data)
+      console.log('🎯 App.jsx: Role from data:', data.role)
+      console.log('🎯 App.jsx: Full memberData:', data)
       setMemberData(data)
       setStatusMessage('')
     },
